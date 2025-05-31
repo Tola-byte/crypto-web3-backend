@@ -13,6 +13,7 @@ import { UserEntity } from '../user/user.entity';
 import { LocalStrategy } from './strategy/local-auth.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { UserService } from '../user/user.service';
+import { UserController } from '../user/user.controller';
 
 @Module({
   imports: [
@@ -47,6 +48,6 @@ import { UserService } from '../user/user.service';
     JwtStrategy
   ],
 
-  controllers: [AuthController],
+  controllers: [AuthController, UserController],
 })
 export class UsersAuthModule {}
