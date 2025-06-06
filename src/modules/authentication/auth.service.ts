@@ -29,9 +29,7 @@ import {
   
     private generateAccessToken(user: UserEntity): string {
       const payload = { sub: user.id };
-      return this.jwtService.sign(payload, {
-        secret: `${process.env.JWT_SECRET}`,
-      });
+      return this.jwtService.sign(payload);
     }
   
     private generateRefreshToken(user: UserEntity): string {

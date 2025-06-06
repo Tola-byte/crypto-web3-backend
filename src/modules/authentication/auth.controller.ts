@@ -16,6 +16,7 @@ import { CreateUserDTO, LoginDTO } from '../user/dto/user.dto';
 import { AuthResponse } from 'src/common/types';
 import { UserEntity } from '../user/user.entity';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshTokenDTO } from './dto/refresh-tokens.dto';
   
   
   @Controller('auth')
@@ -70,5 +71,35 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
       } 
 
     
+
+  @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
+  public async refresh(
+    @Body() data: RefreshTokenDTO,
+  ): Promise<{ accessToken: string; user?: UserEntity }> {
+    try {
+      const { accessToken } = await this.authService.refreshAccessToken(
+        data.refreshToken,
+      );
+
+      return { accessToken };
+    } catch (error: unknown) {
+      let status = HttpStatus.UNAUTHORIZED;
+      let message = 'Invalid or expired refresh token';
+
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'status' in error &&
+        'message' in error
+      ) {
+        const e = error as { status?: number; message?: string };
+        status = e.status ?? status;
+        message = e.message ?? message;
+      }
+
+      throw new HttpException({ message, status }, status);
+    }
+  }
   }
   
